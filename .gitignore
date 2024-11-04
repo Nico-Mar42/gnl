@@ -1,0 +1,5 @@
+text_next_line.text
+empty.text
+*.out
+*.o
+*.a
