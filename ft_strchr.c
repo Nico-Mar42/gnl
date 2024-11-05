@@ -1,30 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_bzero.c                                         :+:      :+:    :+:   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: draask <draask@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/14 15:25:15 by nicolmar          #+#    #+#             */
-/*   Updated: 2024/10/16 10:58:24 by nicolmar         ###   ########.fr       */
+/*   Created: 2024/10/15 13:58:53 by nicolmar          #+#    #+#             */
+/*   Updated: 2024/10/21 21:11:05 by draask           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-void	*ft_bzero(void *str, size_t n )
+char	*ft_strchr(const char *s, int c)
 {
-	char	*s;
+	unsigned char	uc;
 
-	if (str == NULL)
-		return (NULL);
-	s = str;
-	while (n != 0)
+	uc = (unsigned char)c;
+	while (*s)
 	{
-		*s = 0;
+		if (*s == uc)
+			return ((char *)s);
 		s++;
-		n--;
 	}
-	return (str);
+	if (uc == '\0')
+		return ((char *)s);
+	return (NULL);
 }

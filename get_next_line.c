@@ -3,111 +3,87 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: draask <draask@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:25:11 by draask            #+#    #+#             */
-/*   Updated: 2024/11/04 23:25:14 by draask           ###   ########.fr       */
+/*   Updated: 2024/11/05 16:42:19 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*findrest(char *temp)
+static char	*ft_getline(char *buffer)
 {
-	char	*rest;
+	int		i;
+	int		j;
+	char	*line;
+
+	i = 0;
+	j = 0;
+	while (buffer[i] != '\n' && buffer[i] != '\0')
+		i++;
+	line = malloc(i + 2 * 1);
+	while (j != i + 1)
+	{
+		line[j] = buffer[j];
+		j++;
+	}
+	line[j] = 0;
+	return (line);
+}
+
+void	ft_restbuffer(char *buffer, int size)
+{
 	int		i;
 	int		j;
 
 	i = 0;
-	while (temp[i] && temp[i] != '\n')
-		i++;
-	if (temp[i] == '\n')
-		i++;
-	rest = ft_calloc(ft_strlen(&temp[i]) + 1, 1);
-	if (!rest)
-		return (NULL);
 	j = 0;
-	while (temp[i + j] != '\0')
+	while (buffer[i] != '\n' && buffer[i] != '\0')
+		i++;
+	i++;
+	while (buffer[i])
 	{
-		rest[j] = temp[i + j];
+		buffer[j] = buffer[i];
+		j++;
+		i++;
+	}
+	while (j < size - 1)
+	{
+		buffer[j] = 0;
 		j++;
 	}
-	rest[j] = '\0';
 
-	return (rest);
 }
 
 char	*get_next_line(int fd)
 {
-	ssize_t		bytes_read;
+	static char	buffer[BUFFER_SIZE + 1];
 	char		*line;
-	char		*temp;
-	static char	*rest = NULL;
-	char		*temp_line;
-	size_t		i;
+	int			bytes_read;
+	int			i;
 
-	i = 0;
+	i = -1;
 	bytes_read = 1;
-	temp = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	if (!temp)
-		return (NULL);
-
-	line = ft_calloc(1, sizeof(char));
-	if (!line)
+	while (bytes_read != 0 && ft_strchr(buffer, '\n') == NULL)
 	{
-		free(temp);
-		return (NULL);
-	}
-	if (rest)
-	{
-		temp_line = line;
-		line = ft_strjoin(line, rest);
-		free(temp_line);
-		if (rest != NULL)
-			free(rest);
-		rest = NULL;
-		if (!line)
-		{
-			free(temp);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read == -1)
 			return (NULL);
-		}
-	}
-	while (bytes_read > 0)
-	{
-		bytes_read = read(fd, temp, BUFFER_SIZE);
-		if (bytes_read < 0)
-		{
-			free(line);
-			free(temp);
-			return (NULL);
-		}
-		temp[bytes_read] = '\0';
-		temp_line = line;
-		line = ft_strjoin(line, temp);
-		free(temp_line);
-		if (!line)
-		{
-			free(temp);
-			return (NULL);
-		}
-		i = 0;
-		while (line[i])
+		if (bytes_read == 0)
+			break ;
+		line = ft_getline(buffer);
+		ft_restbuffer(buffer, BUFFER_SIZE + 1);
+		while (line[++i] != '\0')
 		{
 			if (line[i] == '\n')
-			{
-				rest = findrest(temp);
-				free(temp);
 				return (line);
-			}
-			i++;
 		}
 	}
-	if (line[0] == '\0')
-	{
-		free(line);
-		line = NULL;
-	}
-	free(temp);
+	if (bytes_read == 0 && buffer[0] == 0)
+		return (line);
+	line = ft_getline(buffer);
+	ft_restbuffer(buffer, BUFFER_SIZE + 1);
 	return (line);
 }
 
@@ -121,30 +97,26 @@ char	*get_next_line(int fd)
 //	line = get_next_line(fd);
 //	printf("%s", line);
 //	free(line);
+
 //	line = get_next_line(fd);
 //	printf("%s", line);
 //	if (line != NULL)
 //		free(line);
-//	close(fd);
-//	line = get_next_line(fd);
-//	printf("%s", line);
-//	if (line != NULL)
-//		free(line);
-//	close(fd);
-//	line = get_next_line(fd);
-//	printf("%s", line);
-//	if (line != NULL)
-//		free(line);
-//	close(fd);
-//	line = get_next_line(fd);
-//	printf("%s", line);
-//	if (line != NULL)
-//		free(line);
-//	close(fd);
-//	line = get_next_line(fd);
-//	printf("%s", line);
-//	if (line != NULL)
-//		free(line);
+
+//	//line = get_next_line(fd);
+//	//printf("%s", line);
+//	//if (line != NULL)
+//	//	free(line);
+
+//	//line = get_next_line(fd);
+//	//printf("%s", line);
+//	//if (line != NULL)
+//	//	free(line);
+
+//	//line = get_next_line(fd);
+//	//printf("%s", line);
+//	//if (line != NULL)
+//	//	free(line);
 //	close(fd);
 //	return 0;
 //}
