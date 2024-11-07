@@ -6,7 +6,7 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:25:11 by draask            #+#    #+#             */
-/*   Updated: 2024/11/07 15:58:24 by nicolmar         ###   ########.fr       */
+/*   Updated: 2024/11/07 18:03:38 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	rstb(char *buffer, int size)
 		j++;
 		i++;
 	}
-	ft_bzero(&buffer[j], size);
+	ft_bzero(&buffer[j], size - j);
 }
 
 char	*get_next_line(int fd)
@@ -85,7 +85,7 @@ char	*get_next_line(int fd)
 	}
 	if (bytes_read == 0 && buffer[0] == 0)
 		if (line == NULL)
-			return (NULL);
+			return (ft_bzero(buffer, BUFFER_SIZE), line);
 	return (line = gtl(line, buffer), rstb(buffer, BUFFER_SIZE + 1), line);
 }
 

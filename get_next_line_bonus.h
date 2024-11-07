@@ -6,12 +6,12 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 12:24:09 by draask            #+#    #+#             */
-/*   Updated: 2024/11/07 15:58:23 by nicolmar         ###   ########.fr       */
+/*   Updated: 2024/11/07 16:06:13 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 # include <stdio.h>
 # include <unistd.h>
 # include <stdarg.h>
@@ -33,4 +33,4 @@ size_t	ft_strlen(const char *str);
 void	*ft_calloc(size_t elementCount, size_t elementSize);
 void	ft_bzero(void *str, size_t n);
 
-#endif 
+#endif
