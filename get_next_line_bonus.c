@@ -6,7 +6,7 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:25:11 by draask            #+#    #+#             */
-/*   Updated: 2024/11/07 18:02:28 by nicolmar         ###   ########.fr       */
+/*   Updated: 2024/11/12 17:08:01 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ static char	*gtl(char *line, char *buffer)
 	i = 0;
 	j = 0;
 	rsltline = ft_calloc((ft_strlen(line) + ft_strlen(buffer) + 2), 1);
-	if (line != NULL)
+	if (rsltline == NULL)
+		return (free(line), NULL);
+	if (line[0] != 0)
 	{
 		while (line[i] != '\0')
 		{
@@ -36,8 +38,7 @@ static char	*gtl(char *line, char *buffer)
 	}
 	if (buffer[j] == '\n')
 		rsltline[i + j] = buffer[j];
-	rsltline[i + ++j] = '\0';
-	return (free(line), rsltline);
+	return (rsltline[i + ++j] = '\0', free(line), rsltline);
 }
 
 void	rstb(char *buffer, int size)
@@ -64,30 +65,30 @@ void	rstb(char *buffer, int size)
 
 char	*get_next_line(int fd)
 {
-	static char	buffer[1024][BUFFER_SIZE + 1];
+	static char	buf[1024][BUFFER_SIZE + 1];
 	char		*line;
 	int			bytes_read;
 
 	bytes_read = 1;
-	line = NULL;
-	while (bytes_read != 0 && ft_strchr(buffer[fd], '\n') == NULL)
+	line = malloc(1);
+	line[0] = 0;
+	if (BUFFER_SIZE < 0)
+		return (free(line), NULL);
+	while (bytes_read != 0 && ft_strchr(line, '\n') == NULL)
 	{
-		if (buffer[fd][0] == 0)
-			bytes_read = read(fd, buffer[fd], BUFFER_SIZE);
+		if (buf[fd][0] == 0)
+			bytes_read = read(fd, buf[fd], BUFFER_SIZE);
 		if (bytes_read == -1)
-			return (NULL);
+			return (free(line), NULL);
 		if (bytes_read == 0)
 			break ;
-		line = gtl(line, buffer[fd]);
-		rstb(buffer[fd], BUFFER_SIZE + 1);
-		if (ft_strchr(line, '\n') != NULL)
-			return (line);
-	}
-	if (bytes_read == 0 && buffer[fd][0] == 0)
+		line = gtl(line, buf[fd]);
 		if (line == NULL)
 			return (NULL);
-	line = gtl(line, buffer[fd]);
-	rstb(buffer[fd], BUFFER_SIZE + 1);
+		rstb(buf[fd], BUFFER_SIZE + 1);
+	}
+	if (bytes_read == 0 && buf[fd][0] == 0 && line[0] == 0)
+		return (free(line), NULL);
 	return (line);
 }
 
@@ -97,8 +98,8 @@ char	*get_next_line(int fd)
 //	int fd2;
 //	char *line;
 
-//	fd = open("lines_around_10.txt", O_RDONLY);
-//	fd2 = open("read_error.txt", O_RDONLY);
+//	fd = open("./files/empty", O_RDONLY);
+//	fd2 = open("./files/multiple_line_nl", O_RDONLY);
 //	if (fd == -1)
 //		return (0);
 //	line = get_next_line(fd);

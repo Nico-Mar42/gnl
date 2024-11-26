@@ -6,7 +6,7 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 08:25:11 by draask            #+#    #+#             */
-/*   Updated: 2024/11/07 18:03:38 by nicolmar         ###   ########.fr       */
+/*   Updated: 2024/11/14 11:37:38 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ static char	*gtl(char *line, char *buffer)
 	i = 0;
 	j = 0;
 	rsltline = ft_calloc((ft_strlen(line) + ft_strlen(buffer) + 2), 1);
-	if (line != NULL)
+	if (rsltline == NULL)
+		return (free(line), NULL);
+	if (line[0] != 0)
 	{
 		while (line[i] != '\0')
 		{
@@ -35,9 +37,8 @@ static char	*gtl(char *line, char *buffer)
 		j++;
 	}
 	if (buffer[j] == '\n')
-		rsltline[i + j] = '\n';
-	rsltline[i + ++j] = '\0';
-	return (free(line), rsltline);
+		rsltline[i + j] = buffer[j];
+	return (rsltline[i + ++j] = '\0', free(line), rsltline);
 }
 
 void	rstb(char *buffer, int size)
@@ -69,31 +70,33 @@ char	*get_next_line(int fd)
 	int			bytes_read;
 
 	bytes_read = 1;
-	line = NULL;
-	while (bytes_read != 0 && ft_strchr(buffer, '\n') == NULL)
+	line = malloc(1);
+	line[0] = 0;
+	if (BUFFER_SIZE < 0)
+		return (free(line), NULL);
+	while (bytes_read != 0 && ft_strchr(line, '\n') == NULL)
 	{
 		if (buffer[0] == 0)
 			bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
-			return (NULL);
+			return (free(line), NULL);
 		if (bytes_read == 0)
 			break ;
 		line = gtl(line, buffer);
-		rstb(buffer, BUFFER_SIZE + 1);
-		if (ft_strchr(line, '\n') != NULL)
-			return (line);
-	}
-	if (bytes_read == 0 && buffer[0] == 0)
 		if (line == NULL)
-			return (ft_bzero(buffer, BUFFER_SIZE), line);
-	return (line = gtl(line, buffer), rstb(buffer, BUFFER_SIZE + 1), line);
+			return (NULL);
+		rstb(buffer, BUFFER_SIZE + 1);
+	}
+	if (bytes_read == 0 && buffer[0] == 0 && line[0] == 0)
+		return (free(line), NULL);
+	return (line);
 }
 
 //int	main()
 //{
 //	int fd;
 //	char *line;
-//	fd = open("./files/read_error.txt", O_RDONLY);
+//	fd = open("./files/empty", O_RDONLY);
 //	if (fd == -1)
 //		return (0);
 //	line = get_next_line(fd);
@@ -125,6 +128,6 @@ char	*get_next_line(int fd)
 //	//if (line != NULL)
 //	//	free(line);
 
-//	close(fd);
+//	//close(fd);
 //	return 0;
 //}

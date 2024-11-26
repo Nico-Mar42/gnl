@@ -6,11 +6,13 @@
 /*   By: nicolmar <nicolmar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/03 08:17:50 by draask            #+#    #+#             */
-/*   Updated: 2024/11/07 14:10:57 by nicolmar         ###   ########.fr       */
+/*   Updated: 2024/11/12 10:22:23 by nicolmar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+//#define malloc(...) NULL
 
 size_t	ft_strlen(const char *str)
 {
