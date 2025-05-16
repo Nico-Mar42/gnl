@@ -1,7 +1,3 @@
-Voici le fichier **README.md** complet, écrit en **Markdown**, prêt à être utilisé dans ton projet `get_next_line` de l’école 42 :
-
----
-
 ````markdown
 # get_next_line
 
